@@ -2,7 +2,7 @@
 title: "ST425 - Computer session 2"
 author: "Sahoko ISHIDA"
 date: "09/23/2020"
-output: html_document
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
