@@ -1,0 +1,69 @@
+---
+title: "ST425 - Computer session 2"
+author: "Sahoko ISHIDA"
+date: "09/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Q2.1 & Q2.5
+See the solutions to weekly exercise 2.
+
+### Additional exercise
+#### Measuring skewness (a)-(b)
+Skewness:
+$$g_1 = \frac{m^3}{s^3}=\frac{\sum_{i=1}^{n}(x_i-\bar{x})^3/n}{s^3}$$
+where $m^3$ is the third moment and $s$ is the standard deviation.
+```{r skewness}
+skewness=function(x){
+    m3=sum((x-mean(x))^3)/length(x)
+    s3=sqrt(var(x))^3
+    m3/s3
+    }
+```
+Given a vector `x`, `length(x)` returns the length of the vector, (which is `n`) and `sqrt(var(x))` gives the standard deviation.
+
+#### (c)-(g)
+Let $X_i\sim N(0,1)$ for $i=1,2,...,6$. Generate $n=50$ values from each $X_i$ and then generate n values from $Y = \sum_{i=1}^6X^2_i$. First, we can write a function that geberate $Y$ given $n$ and degree of freedom for chi square distribution.  
+```{r chisq_manual}
+chisq <- function(n, df){
+    X <- matrix(nrow = n, ncol = df)
+    for (i in 1:6){
+      X[,i] <- rnorm(n=n, 0, 1)
+      }
+    return(rowSums(X^2))
+    }
+```
+Set $n=50$ and $df=6$, and we can generate $n$ random number,
+```{r chisq_manual_50}
+n =50
+Y <- chisq(n=n, df=6)
+```
+
+To generate $n$ values from $Y'\sim \chi^2(6)$ we can use `rchisq()` function.
+```{r chisq_auto}
+Yd <- rchisq(n=n, df=6)
+```
+
+We can compare the result by looking at mean, variance, skewness, and histogram.
+```{r compare}
+result <- rbind(c(mean(Y), var(Y), skewness(Y)), 
+                c(mean(Yd), var(Yd), skewness(Yd)))
+dimnames(result) <- list(c("Y","Y'"),
+                         c("Mean","Variance","Skewness"))
+result
+```
+
+```{r histogram, echo=FALSE}
+par(mfrow=c(1,2))
+hist(Y, breaks = 8, main = "Histogram of Y", xlim = c(0,20))
+hist(Yd, breaks = 8, main = "Histogram of Y'", xlim = c(0,20))
+```
+
+Repeat with different values for n and d.f.!
+
+### Q2.4 No memory property
+
